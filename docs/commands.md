@@ -30,3 +30,17 @@ docker run -d --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3-management
 docker-compose -f broker/docker-compose.yml up -d
 ```d
 ````
+
+### Start docker-compose
+
+```bash
+cd broker
+docker-compose up --build
+```
+
+### Stop docker-compose
+
+```bash
+cd broker
+docker-compose down
+```
