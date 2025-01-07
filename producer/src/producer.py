@@ -1,13 +1,19 @@
 import pika
 import json
 from speech_to_text import transcribe_speech
-from config import RABBITMQ_HOST, RABBITMQ_QUEUE
+from config import RABBITMQ_HOST, RABBITMQ_QUEUE, RABBITMQ_NAME, RABBITMQ_PASSWORD
+import time
 
 def send_to_broker(message):
     """
     Verzendt een bericht naar de RabbitMQ-broker.
     """
-    connection = pika.BlockingConnection(pika.ConnectionParameters(RABBITMQ_HOST))
+    connection = pika.BlockingConnection(
+        pika.ConnectionParameters(
+            host=RABBITMQ_HOST, 
+            credentials=pika.PlainCredentials(RABBITMQ_NAME, RABBITMQ_PASSWORD)
+        )
+    )
     channel = connection.channel()
     channel.queue_declare(queue=RABBITMQ_QUEUE)
 

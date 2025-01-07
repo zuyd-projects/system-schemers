@@ -1,8 +1,9 @@
 import pika
 import json
-from config import RABBITMQ_HOST, RABBITMQ_QUEUE
+from config import RABBITMQ_HOST, RABBITMQ_QUEUE, RABBITMQ_NAME, RABBITMQ_PASSWORD
 from extract_classes import extract_classes_from_text_with_nlp
 from diagram_generator import generate_class_diagram
+import time
 
 def process_message(body):
     """
@@ -41,36 +42,53 @@ def main():
     """
     print("Consumer gestart. Wachten op berichten...")
 
-    try:
-        # Verbinden met RabbitMQ
-        connection = pika.BlockingConnection(pika.ConnectionParameters(RABBITMQ_HOST))
-        channel = connection.channel()
+    def connect_and_consume():
+        """
+        Probeer verbinding te maken met RabbitMQ en berichten te consumeren.
+        """
+        while True:
+            try:
+                # Verbinden met RabbitMQ
+                connection = pika.BlockingConnection(pika.ConnectionParameters(
+                    host=RABBITMQ_HOST,
+                    credentials=pika.PlainCredentials(RABBITMQ_NAME, RABBITMQ_PASSWORD)
+                ))
+                channel = connection.channel()
 
-        # Zorg ervoor dat de queue bestaat
-        channel.queue_declare(queue=RABBITMQ_QUEUE)
+                # Zorg ervoor dat de queue bestaat
+                channel.queue_declare(queue=RABBITMQ_QUEUE)
 
-        # Callback voor ontvangen berichten
-        def callback(ch, method, properties, body):
-            process_message(body)
+                # Callback voor ontvangen berichten
+                def callback(ch, method, properties, body):
+                    process_message(body)
 
-        # Luisteren naar de queue
-        channel.basic_consume(
-            queue=RABBITMQ_QUEUE,
-            on_message_callback=callback,
-            auto_ack=True  # Automatisch bevestigen
-        )
+                # Luisteren naar de queue
+                channel.basic_consume(
+                    queue=RABBITMQ_QUEUE,
+                    on_message_callback=callback,
+                    auto_ack=True  # Automatisch bevestigen
+                )
 
-        print(" [*] Wachten op berichten. Druk op CTRL+C om te stoppen.")
-        channel.start_consuming()
-    except pika.exceptions.AMQPConnectionError as e:
-        print(f"Kan geen verbinding maken met RabbitMQ: {e}")
-    except KeyboardInterrupt:
-        print("\nConsumer gestopt.")
-    finally:
-        try:
-            connection.close()
-        except Exception:
-            pass
+                print(" [*] Wachten op berichten. Druk op CTRL+C om te stoppen.")
+                channel.start_consuming()
+
+            except pika.exceptions.AMQPConnectionError as e:
+                print(f"Kan geen verbinding maken met RabbitMQ: {e}")
+                print("Opnieuw verbinden over 5 seconden...")
+                time.sleep(5)  # Wacht voor herverbinding
+            except KeyboardInterrupt:
+                print("\nConsumer gestopt door gebruiker.")
+                break
+            except Exception as e:
+                print(f"Onverwachte fout: {e}")
+                break
+            finally:
+                try:
+                    connection.close()
+                except Exception:
+                    pass
+
+    connect_and_consume()
 
 if __name__ == "__main__":
     main()

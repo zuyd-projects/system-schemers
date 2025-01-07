@@ -17,15 +17,15 @@ services:
   #     - ../connect:/app
   #   command: ["python", "/app/src/connect.py"]
 
-  # producer:
-  #   build:
-  #     context: ../producer 
-  #     dockerfile: Dockerfile
-  #   depends_on:
-  #     - rabbitmq
-  #   volumes:
-  #     - ../producer:/app
-  #   command: ["python", "/app/src/producer.py"]
+  producer:
+    build:
+      context: ../producer 
+      dockerfile: Dockerfile
+    depends_on:
+      - rabbitmq
+    volumes:
+      - ../producer:/app
+    command: ["python", "/app/src/producer.py"]
 
   consumer:
     build:
