@@ -16,27 +16,30 @@ def extract_classes_from_text_with_nlp(text):
     prompt = f"""
     Analyze the following text and generate a JSON list with class information. 
     For each class:
-    - Provide the name of the class. (Make sure it is in English and use CamelCase)
-    - Provide the fields (with name and type). (Make sure it is in English)
-    - Provide the methods. (Make sure it is in English)
-    - Provide the relationships with other classes (e.g., 'contains', 'uses'). (Make sure it is in English)
+    - Provide the name of the class. (Ensure it is specific, relevant to the domain, in English, and uses CamelCase.)
+    - Avoid generic class names such as "Application", "System", or other non-specific terms.
+    - Ensure the classes represent concrete concepts or entities mentioned in the text, not abstract ideas or generalizations.
+    - Provide the fields (with name and type). (Ensure they are specific to the context and in English.)
+    - Provide the methods. (Ensure they are specific to the context and in English.)
+    - Provide the relationships with other classes (e.g., 'contains', 'uses'). (Ensure they are specific to the context and in English.)
+    - If a term like "application" is mentioned, focus on its components (e.g., entities it manages) rather than treating it as a standalone class.
 
     Text: "{text}"
 
     Example output:
     [
         {{
-            "name": "Form",
-            "fields": ["name: str", "email: str", "comments: str"],
-            "methods": ["validate", "submit"],
+            "name": "WarhammerUnit",
+            "fields": ["name: str", "type: str", "vehicle: str"],
+            "methods": ["addUnit", "removeUnit"],
             "relations": [
-                {{"target": "Field", "type": "contains"}}
+                {{"target": "Leaderboard", "type": "uses"}}
             ]
         }},
         {{
-            "name": "Field",
-            "fields": ["label: str", "value: Any"],
-            "methods": ["render"],
+            "name": "Leaderboard",
+            "fields": ["ranking: list", "unitStats: dict"],
+            "methods": ["addScore", "resetLeaderboard"],
             "relations": []
         }}
     ]
