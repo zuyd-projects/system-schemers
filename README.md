@@ -155,8 +155,8 @@ De PoC beperkt zich tot de volgende componenten:
 --- 
 
 ## 9. Benodigde Middelen  
-1. Ontwikkelomgeving: Python, Kafka, Graphviz.  
-2. Cloudservices: Optioneel, voor hosting (AWS of GCP).  
+1. Ontwikkelomgeving
+2. Cloudservices: Optioneel
 3. Tijd: 2 weken.  
 
 ---
