@@ -2,7 +2,9 @@
 # Proof of Concept (PoC) Voorstel: Event-Driven Architectuur (EDA) voor PI6
 
 **Versie:** 1.0  
+
 **Auteur:** Noa Heutz
+
 **Datum:** Tue 7 Jan
 
 ---
