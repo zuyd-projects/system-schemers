@@ -14,3 +14,11 @@ services:
     depends_on:
       - rabbitmq
     command: ["python", "./src/producer.py"]
+
+  consumer:
+    build:
+      context: .
+      dockerfile: consumer/Dockerfile
+    depends_on:
+      - rabbitmq
+    command: ["python", "./src/consumer.py"]
