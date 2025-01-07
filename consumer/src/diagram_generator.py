@@ -3,16 +3,18 @@ import graphviz
 
 def generate_class_diagram(classes, output_path='diagram_output/class_diagram'):
     """
-    Genereert een class diagram op basis van de ontvangen klassen en relaties.
+        Generates a class diagram based on the received classes and their relationships.
 
-    Args:
-        classes (list of dict): Een lijst met klassen. Elke klasse wordt beschreven door een dict met:
-            - "name" (str): Naam van de klasse.
-            - "fields" (list of str): Veldnamen in de klasse.
-            - "methods" (list of str): Methodes van de klasse.
-            - "relations" (list of dict): Relaties naar andere klassen (optioneel).
-        output_path (str): Pad waar het diagram wordt opgeslagen (zonder extensie).
+        Args:
+            classes (list of dict): A list of classes. Each class is described by a dictionary with:
+                - "name" (str): The name of the class. (Make sure it is in English and use CamelCase)
+                - "fields" (list of str): The fields in the class. (Make sure it is in English and use CamelCase)
+                - "methods" (list of str): The methods in the class. (Make sure it is in English and use CamelCase)
+                - "relations" (list of dict): Relationships to other classes (optional). (Make sure it is in English and use CamelCase)
+            output_path (str): The path where the diagram will be saved (without extension).
     """
+
+    
     # Zorg dat de output directory bestaat
     output_dir = os.path.dirname(output_path)
     os.makedirs(output_dir, exist_ok=True)

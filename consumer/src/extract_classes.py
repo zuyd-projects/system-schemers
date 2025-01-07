@@ -14,28 +14,28 @@ def extract_classes_from_text_with_nlp(text):
         list of dict: Een lijst van klassen met velden, methoden en relaties.
     """
     prompt = f"""
-    Analyseer de volgende tekst en genereer een JSON-lijst met klasseninformatie. 
-    Voor elke klasse:
-    - Geef de naam van de klasse.
-    - Geef de velden (met naam en type).
-    - Geef de methoden.
-    - Geef de relaties met andere klassen (bijvoorbeeld 'contains', 'uses').
+    Analyze the following text and generate a JSON list with class information. 
+    For each class:
+    - Provide the name of the class. (Make sure it is in English and use CamelCase)
+    - Provide the fields (with name and type). (Make sure it is in English)
+    - Provide the methods. (Make sure it is in English)
+    - Provide the relationships with other classes (e.g., 'contains', 'uses'). (Make sure it is in English)
 
-    Tekst: "{text}"
+    Text: "{text}"
 
-    Outputvoorbeeld:
+    Example output:
     [
         {{
-            "name": "Formulier",
-            "fields": ["naam: str", "email: str", "opmerkingen: str"],
+            "name": "Form",
+            "fields": ["name: str", "email: str", "comments: str"],
             "methods": ["validate", "submit"],
             "relations": [
-                {{"target": "Veld", "type": "contains"}}
+                {{"target": "Field", "type": "contains"}}
             ]
         }},
         {{
-            "name": "Veld",
-            "fields": ["label: str", "waarde: Any"],
+            "name": "Field",
+            "fields": ["label: str", "value: Any"],
             "methods": ["render"],
             "relations": []
         }}
