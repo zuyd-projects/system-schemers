@@ -1,7 +1,7 @@
 
 # Proof of Concept (PoC) Voorstel: Event-Driven Architectuur (EDA) voor PI6
 
-**Versie:** 1.0  
+**Versie:** 1.1  
 
 **Auteur:** Noa Heutz
 
@@ -55,20 +55,19 @@ De PoC beperkt zich tot de volgende componenten:
 - **Functie:** Neemt spraakinvoer van de gebruiker en converteert dit naar tekst.  
 - **Event:** JSON-payload met de spraaktekst en metadata (bijv. timestamp).  
 - **Technologie:**  
-  - Spraak-naar-tekst API: Google Speech-to-Text of OpenAI Whisper.  
-  - Talen: Python met Flask voor eenvoudige invoerinterface.  
+  - Spraak-naar-tekst API: OpenAI Whisper.  
+  - Talen: Python.  
 
 ### 5.2 Event Broker  
 - **Functie:** Zorgt voor distributie van events tussen modules.  
 - **Technologie:**  
-  - Apache Kafka voor schaalbaarheid en prestaties.  
-  - Alternatief: RabbitMQ voor eenvoud.  
+  - RabbitMQ voor eenvoud en asynchrone verwerking.  
 
 ### 5.3 NLP-module (Consumer)  
 - **Functie:** Verwerkt tekst naar een ontwerpdefinitie.  
 - **Event:** JSON-payload met de ontwerpdefinitie (bijv. velden, knoppen).  
 - **Technologie:**  
-  - NLP-tool: GPT-4 API of Hugging Face Transformers.  
+  - NLP-tool: GPT-4 API.  
   - Ontwerpmodel: JSON-output die velden (bijv. naam, type) beschrijft.  
 
 ### 5.4 Visualisatie-module  
@@ -79,7 +78,7 @@ De PoC beperkt zich tot de volgende componenten:
 ### 5.5 Foutbeheer (Dead Letter Queue)  
 - **Functie:** Registreert events die niet succesvol zijn verwerkt en probeert ze opnieuw.  
 - **Technologie:**  
-  - Kafka DLQ of Redis Queue voor eenvoudige retries.  
+  - RabbitMQ Dead Letter Exchange.  
 
 ---
 
@@ -114,14 +113,7 @@ De PoC beperkt zich tot de volgende componenten:
 
 ### 6.3 Stap 3: Visualisatie  
 1. De ontwerpdefinitie wordt doorgestuurd naar de visualisatie-module.  
-2. Een eenvoudig diagram wordt gegenereerd, bijvoorbeeld:  
-   ```
-   +------------+
-   |  Feedback  |
-   +------------+
-   |  Versturen |
-   +------------+
-   ```
+2. Een eenvoudig diagram wordt gegenereerd en opgeslagen als PNG.  
 
 ### 6.4 Foutbeheer  
 - Bij een fout (bijvoorbeeld NLP-module niet beschikbaar), wordt het event naar de DLQ gestuurd voor herverwerking.  
@@ -132,7 +124,7 @@ De PoC beperkt zich tot de volgende componenten:
 
 | **Fase**                | **Activiteit**                              | **Tijd (dagen)** |  
 |--------------------------|---------------------------------------------|------------------|  
-| 1. Setup                | Opzetten van infrastructuur (Kafka, Flask)  | 2                |  
+| 1. Setup                | Opzetten van infrastructuur (RabbitMQ)      | 2                |  
 | 2. Speech-to-Text       | Implementeren van spraakinterface           | 3                |  
 | 3. Event Broker         | Configureren van event-broker               | 2                |  
 | 4. NLP-module           | Bouwen van NLP-verwerking                  | 3                |  
