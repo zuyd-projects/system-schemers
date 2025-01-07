@@ -1,14 +1,15 @@
+# Use Python base image
 FROM python:3.9-slim
 
-# Werkmap instellen op de producer map binnen system-schemers
-WORKDIR /app/producer
+# Set the working directory inside the container
+WORKDIR /app
 
-# Vereisten kopiëren en installeren
-COPY producer/requirements.txt requirements.txt
+# Copy requirements and install dependencies
+COPY requirements.txt requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Applicatiecode kopiëren
-COPY producer/src/ ./src
+# Copy source code into the container
+COPY src/ ./src
 
-# Start commando instellen
+# Set the command to run the producer
 CMD ["python", "./src/producer.py"]

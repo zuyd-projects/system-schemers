@@ -9,16 +9,16 @@ services:
 
   producer:
     build:
-      context: .
-      dockerfile: producer/Dockerfile
+      context: ../producer  # Correctly point to the producer directory
+      dockerfile: Dockerfile
     depends_on:
       - rabbitmq
     command: ["python", "./src/producer.py"]
 
   consumer:
     build:
-      context: .
-      dockerfile: consumer/Dockerfile
+      context: ../consumer  # Correctly point to the consumer directory
+      dockerfile: Dockerfile
     depends_on:
       - rabbitmq
     command: ["python", "./src/consumer.py"]

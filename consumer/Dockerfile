@@ -1,14 +1,15 @@
+# Use Python base image
 FROM python:3.9-slim
 
-# Werkmap instellen op de consumer map binnen system-schemers
-WORKDIR /app/consumer
+# Set the working directory inside the container
+WORKDIR /app
 
-# Vereisten kopiëren en installeren
-COPY consumer/requirements.txt requirements.txt
+# Copy requirements and install dependencies
+COPY requirements.txt requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Applicatiecode kopiëren
-COPY consumer/src/ ./src
+# Copy source code into the container
+COPY src/ ./src
 
-# Start commando instellen
+# Set the command to run the consumer
 CMD ["python", "./src/consumer.py"]
