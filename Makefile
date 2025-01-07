@@ -1,8 +1,10 @@
-# Start alle services
+# Start all services
 run:
 	docker-compose -f broker/docker-compose.yml up -d
-	python producer/src/producer.py &
+	@echo "Waiting for RabbitMQ to be ready..."
+	sleep 10  # Wait for RabbitMQ (or adjust the time as needed)
 	python consumer/src/consumer.py &
+	python producer/src/producer.py &
 
 # Stop alle services
 stop:

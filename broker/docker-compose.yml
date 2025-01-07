@@ -6,19 +6,3 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
-
-  producer:
-    build:
-      context: ../producer  # Correctly point to the producer directory
-      dockerfile: Dockerfile
-    depends_on:
-      - rabbitmq
-    command: ["python", "./src/producer.py"]
-
-  consumer:
-    build:
-      context: ../consumer  # Correctly point to the consumer directory
-      dockerfile: Dockerfile
-    depends_on:
-      - rabbitmq
-    command: ["python", "./src/consumer.py"]
