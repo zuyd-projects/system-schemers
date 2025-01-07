@@ -18,4 +18,4 @@ python consumer/src/consumer.py
 ### Start RabbitMQ met Docker Compose
 ```bash
 docker-compose -f broker/docker-compose.yml up -d
-```
+```d
