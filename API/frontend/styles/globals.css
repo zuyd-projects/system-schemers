@@ -1,21 +1,86 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* Zorgt dat alles in het midden staat */
+.audio-recorder-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #f8f9fa;
+  font-family: Arial, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Kader rond de inhoud */
+.audio-recorder-box {
+  background: #ffffff;
+  padding: 30px 40px;
+  border: 2px solid #dee2e6;
+  border-radius: 10px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: 100%;
+  max-width: 500px;
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+.audio-recorder-box h1 {
+  font-size: 2rem;
+  color: #343a40;
+  margin-bottom: 20px;
 }
+
+.record-button {
+  padding: 15px 30px;
+  font-size: 18px;
+  cursor: pointer;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+}
+
+.record-button.start {
+  background-color: #28a745;
+}
+
+.record-button.start:hover {
+  background-color: #218838;
+}
+
+.record-button.stop {
+  background-color: #dc3545;
+}
+
+.record-button.stop:hover {
+  background-color: #c82333;
+}
+
+.audio-controls {
+  margin-top: 30px;
+  width: 100%;
+}
+
+.audio-controls audio {
+  margin-top: 10px;
+  width: 100%;
+  outline: none;
+  border-radius: 5px;
+}
+
+.download-link {
+  display: inline-block;
+  margin-top: 15px;
+  color: #007bff;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.download-link:hover {
+  text-decoration: underline;
+  color: #0056b3;
+}
+
+.timer {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #343a40;
+  margin-bottom: 15px;
+}
+
