@@ -1,131 +1,148 @@
 
-# Consumer Documentatie
+# Consumer Documentation
 
-De **Consumer** is verantwoordelijk voor het ontvangen en verwerken van berichten uit RabbitMQ en het genereren van class diagrammen op basis van de ontvangen tekst.
+The **Consumer** is responsible for receiving and processing messages from RabbitMQ and generating class diagrams based on the received text.
 
-## Overzicht
-1. **Berichten ophalen:**  
-   De consumer luistert naar een RabbitMQ-queue en haalt berichten op zodra deze beschikbaar zijn.
-2. **Tekstverwerking met OpenAI NLP:**  
-   De ontvangen tekst wordt geanalyseerd met behulp van de OpenAI API om klasseninformatie te extraheren.
-3. **Class diagram genereren:**  
-   Met behulp van Graphviz wordt een class diagram gegenereerd en opgeslagen.
+## Overview
+1. **Message Retrieval:**  
+   The consumer listens to a RabbitMQ queue and retrieves messages as they become available.
+2. **Text Processing with OpenAI NLP:**  
+   The received text is analyzed using the OpenAI API to extract class information.
+3. **Class Diagram Generation:**  
+   Using Graphviz, a class diagram is generated and saved.
 
 ---
 
-## Configuratie
-De configuratie voor de consumer wordt ingesteld in `config.py`:
+## Configuration
+The configuration for the consumer is defined in `config.py`:
 ```python
-# RabbitMQ configuratie
+# RabbitMQ configuration
 RABBITMQ_HOST = 'localhost'
 RABBITMQ_QUEUE = 'speech_events'
 
-# OpenAI API-sleutel
-OPENAI_API_KEY = 'jouw-api-sleutel-hier'
+# OpenAI API key
+OPENAI_API_KEY = 'your-api-key-here'
+
+METAMODEL_SERVICE_URL = "http://localhost:5005/api"
 ```
 
 ---
 
-## Bestandsstructuur
-De consumer bestaat uit de volgende modules:
+## File Structure
+The consumer consists of the following modules:
 
 ```plaintext
 consumer/
 ├── src/
-│   ├── consumer.py               # Hoofdscript van de consumer
-│   ├── extract_classes.py        # Analyseert tekst met OpenAI API
-│   ├── diagram_generator.py      # Genereert class diagrammen
-│   ├── config.py                 # Configuratiebestand
-├── tests/                        # Unit tests voor de consumer
-├── requirements.txt              # Vereiste Python-pakketten
-└── Dockerfile                    # Dockerconfiguratie
+│   ├── consumer.py               # Main script of the consumer
+│   ├── extract_classes.py        # Analyzes text using OpenAI API
+│   ├── diagram_generator.py      # Generates class diagrams
+│   ├── metamodel_service.py      # Interacts with the metamodel service
+│   ├── config.py                 # Configuration file
+├── tests/                        # Unit tests for the consumer
+├── requirements.txt              # Required Python packages
+└── Dockerfile                    # Docker configuration
 ```
 
 ---
 
-## Hoe te gebruiken
+## Usage
 1. **Start RabbitMQ:**
-   Zorg ervoor dat RabbitMQ actief is. Je kunt Docker Compose gebruiken:
+   Ensure RabbitMQ is running. You can use Docker Compose:
    ```bash
    docker-compose -f broker/docker-compose.yml up -d
    ```
 
-2. **Start de producer:**
-   Zorg dat de producer berichten naar RabbitMQ stuurt, zoals:
+2. **Start the producer:**
+   Ensure the producer sends messages to RabbitMQ, such as:
    ```plaintext
-   "Maak een formulier met velden naam, e-mail en opmerkingen."
+   "Create a form with fields name, email, and comments."
    ```
 
-3. **Start de consumer:**
-   Draai het script:
+3. **Start the consumer:**
+   Run the script:
    ```bash
    python consumer/src/consumer.py
    ```
 
-4. **Resultaat:**
-   - Het gegenereerde class diagram wordt opgeslagen als een PNG-bestand in `diagram_output/class_diagram.png`.
+4. **Result:**
+   - The generated class diagram will be saved as a PNG file in `diagram_output/class_diagram.png`.
+   - Extracted classes will be stored in the Metamodel Service.
 
 ---
 
-## Belangrijke functies
+## Key Functions
 
 ### **`consumer.py`**
 - **`process_message(body)`:**
-  Verwerkt elk bericht dat wordt ontvangen van RabbitMQ. Dit omvat:
-  - Het decoderen van JSON-berichten.
-  - Het aanroepen van `extract_classes_from_text_with_nlp` voor tekstanalyse.
-  - Het aanroepen van `generate_class_diagram` om een class diagram te genereren.
+  Processes each message received from RabbitMQ. This includes:
+  - Decoding JSON messages.
+  - Calling `extract_classes_from_text_with_nlp` for text analysis.
+  - Sending extracted classes to the metamodel service via `send_to_metamodel_service`.
+  - Optionally calling `generate_class_diagram` to generate a class diagram.
 
 - **`main()`:**
-  Verbindt met RabbitMQ, luistert naar de queue en roept `process_message` aan voor elk ontvangen bericht.
+  Connects to RabbitMQ, listens to the queue, and calls `process_message` for each received message.
 
 ---
 
 ### **`extract_classes.py`**
 - **`extract_classes_from_text_with_nlp(text)`:**
-  - Analyseert de tekst met behulp van de OpenAI API (GPT-model).
-  - Retourneert een lijst met klassen, inclusief velden, methoden en relaties.
+  - Analyzes the text using the OpenAI API (GPT model).
+  - Returns a list of classes, including fields, methods, and relationships.
 
 ---
 
 ### **`diagram_generator.py`**
 - **`generate_class_diagram(classes, output_path)`:**
-  - Genereert een class diagram in PNG-formaat.
-  - Ondersteunt klassen, velden, methoden en relaties.
+  - Generates a class diagram in PNG format.
+  - Supports classes, fields, methods, and relationships.
 
 ---
 
-## Vereisten
-Zorg ervoor dat de volgende pakketten zijn geïnstalleerd:
+### **`metamodel_service.py`**
+- **`send_to_metamodel_service(classes, model_id)`:**
+  - Sends extracted class information to the Metamodel Service via REST API.
+  - Creates models, object types, attributes, and relationships in the service.
+
+---
+
+## Requirements
+Ensure the following packages are installed:
 ```bash
-pip install pika openai graphviz
+pip install pika openai graphviz requests
 ```
 
 ---
 
-## Testen
+## Testing
 1. **Producer:**
-   - Stuur een bericht zoals:  
+   - Send a message such as:  
      ```plaintext
-     "Maak een formulier met velden naam, e-mail en opmerkingen."
+     "Create a form with fields name, email, and comments."
      ```
 
 2. **Consumer:**
-   - Controleer de console-uitvoer om te zien of de tekst correct is geanalyseerd en of het diagram is gegenereerd.
+   - Check the console output to see if the text is correctly analyzed and if the diagram is generated.
 
 3. **Diagram Output:**
-   - Open het gegenereerde diagram in `diagram_output/class_diagram.png`.
+   - Open the generated diagram in `diagram_output/class_diagram.png`.
+
+4. **Metamodel Service Integration:**
+   - Verify the classes, attributes, and relationships are stored in the Metamodel Service.
 
 ---
 
-## Mogelijke Uitbreidingen
-1. **Complexere NLP-verwerking:**
-   - Voeg extra prompts toe om relaties en klassenlogica beter te begrijpen.
-2. **UI-integratie:**
-   - Toon de gegenereerde diagrammen via een frontend.
-3. **Database-ondersteuning:**
-   - Sla de klasseninformatie op in een database voor verdere analyse.
+## Possible Extensions
+1. **More Complex NLP Processing:**
+   - Add additional prompts to better understand relationships and class logic.
+2. **UI Integration:**
+   - Display the generated diagrams through a frontend.
+3. **Database Support:**
+   - Store class information in a database for further analysis.
+4. **Error Handling and Retry Logic:**
+   - Improve error handling when interacting with RabbitMQ or the Metamodel Service.
 
 ---
 
-Laat weten als je verdere vragen hebt of hulp nodig hebt!
+Let us know if you have further questions or need assistance!
