@@ -32,6 +32,26 @@ def process_message(body):
                 if model_id:
                     # Send classes and relationships to Metamodel Service
                     send_to_metamodel_service(classes, model_id)
+                    # wait for the metamodel service to finish
+                    time.sleep(15)
+                    #then sent a pika message to the application generator with app_ready_to_generate
+                    connection = pika.BlockingConnection(
+                        pika.ConnectionParameters(
+                            host=RABBITMQ_HOST,
+                            credentials=pika.PlainCredentials(RABBITMQ_NAME, RABBITMQ_PASSWORD)
+                        )
+                    )
+                    channel = connection.channel()
+                    channel.queue_declare(queue=RABBITMQ_QUEUE)
+                    message = {
+                        "event_type": "app_ready_to_generate",
+                        "payload": {
+                            "model_id": model_id
+                        }
+                    }
+                    channel.basic_publish(exchange='', routing_key=RABBITMQ_QUEUE, body=json.dumps(message))
+                    print(f"[x] Message sent: {message}")
+                    connection.close()
                     # Optionally, generate a class diagram
                     generate_class_diagram(classes) #FIXME: THIS SHOULD BE ANOTHER SERVICE FAVORABLY AFTER THE METAMODEL SERVICE
             else:
