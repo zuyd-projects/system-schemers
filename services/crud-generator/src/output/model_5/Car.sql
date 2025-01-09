@@ -1,0 +1,8 @@
+CREATE TABLE Car (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  make STR,
+  model STR,
+  year INT,
+  parts LIST,
+  createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
+);
