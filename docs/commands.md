@@ -37,7 +37,7 @@ Virtual environments are used to isolate Python dependencies for the consumer an
 
 RabbitMQ serves as the message broker for communication between the producer and consumer.
 
-### Download and Run RabbitMQ
+### Download and Run RabbitMQ 
 
 Use the following command to download and run RabbitMQ using Docker:
 ```bash
@@ -58,6 +58,13 @@ docker-compose -f broker/docker-compose.yml up -d
 
 After RabbitMQ is running, follow these steps to start the metamodel service, consumer, and producer.
 
+### Start the Consumer (FIRST OTHERWISE QUEUE WILL BE EMPTY)
+
+The consumer listens to RabbitMQ for messages, processes them, and interacts with the metamodel service.
+
+```bash
+python services/consumer/src/consumer.py
+```
 ### Start the Metamodel Service
 
 The Metamodel Service handles CRUD operations for managing the metamodel entities.
@@ -73,14 +80,6 @@ The Crud Generator Service generates CRUD operations for the metamodel entities.
 ```bash
 cd services/crud-generator
 node src/app.js
-```
-
-### Start the Consumer
-
-The consumer listens to RabbitMQ for messages, processes them, and interacts with the metamodel service.
-
-```bash
-python services/consumer/src/consumer.py
 ```
 
 ### Start the Producer

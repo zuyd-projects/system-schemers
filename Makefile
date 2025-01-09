@@ -24,8 +24,8 @@ run:
 
 # Stop all services
 stop:
-	@echo "Stopping RabbitMQ broker..."
-	docker-compose -f broker/docker-compose.yml down
+	# @echo "Stopping RabbitMQ broker..."
+	# docker-compose -f broker/docker-compose.yml down
 	@echo "Killing Python processes..."
 	- killall python || true
 	@echo "Killing Node processes..."
