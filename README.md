@@ -190,4 +190,4 @@ The PoC focuses on the following components:
 ---
 
 ## 10. Conclusion  
-This PoC provides a robust demonstration of the Event-Driven Architecture, extended with a Metamodel Service. It showcases the scalability, flexibility, and robustness of the architecture, laying a foundation for future extensions.
+This PoC provides a robust demonstration of the Event-Driven Architecture, extended with a Metamodel Service. It showcases the scalability, flexibility, and robustness of the architecture, laying a foundation for future extensions....
