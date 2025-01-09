@@ -146,3 +146,7 @@ pip install pika openai graphviz requests
 ---
 
 Let us know if you have further questions or need assistance!
+
+## Contributors
+- **Noa Heutz** - Architect and Developer
+- **Maikel Heijen** - Architect and Developer

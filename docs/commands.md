@@ -96,3 +96,8 @@ python services/producer/src/producer.py
 ---
 
 By following these commands, you will have a fully functional environment to test and use the consumer, producer, and metamodel service.
+
+
+## Contributors
+- **Noa Heutz** - Architect and Developer
+- **Maikel Heijen** - Architect and Developer

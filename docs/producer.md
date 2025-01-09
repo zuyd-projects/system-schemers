@@ -70,3 +70,7 @@ OPENAI_API_KEY = 'your-api-key-here'
 ## Next Steps
 - Integrate with a frontend to dynamically start speech recording.
 - Add automatic retries for RabbitMQ connections.
+
+## Contributors
+- **Noa Heutz** - Architect and Developer
+- **Maikel Heijen** - Architect and Developer

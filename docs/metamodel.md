@@ -180,3 +180,7 @@ The metamodel is designed to be extensible:
 ## Conclusion
 
 The metamodel provides a structured way to manage and relate entities in a flexible and scalable manner. It uses a generic CRUD API and Sequelize ORM to simplify database interactions, making it easy to add new entities or modify existing ones as the system evolves.
+
+## Contributors
+- **Noa Heutz** - Architect and Developer
+- **Maikel Heijen** - Architect and Developer
