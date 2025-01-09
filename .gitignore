@@ -2,3 +2,4 @@ config.py
 venv/
 __pycache__/
 node_modules/
+config.js

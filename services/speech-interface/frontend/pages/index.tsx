@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import axios from "axios"; // Add Axios for HTTP requests
 import "../styles/globals.css";
 
+// FIXME: @MAIKEL CHECK OF HET HIER MOGELIJK IS OM TE TRANSCRIBEN MET WHISPER MODEL
 const AudioRecorder: React.FC = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);

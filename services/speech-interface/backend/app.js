@@ -44,6 +44,8 @@ app.post("/upload", upload.single("audio"), async (req, res) => {
 });
 
 // Transcribe audio using OpenAI Whisper API
+
+// FIXME: @MAIKEL CHECK OF DIT NAAR FRONTEND KAN ZODAT WE NIET HOEVEN TE KLOOIEN MET FILE UPLOADS
 async function transcribeAudio(audioPath) {
     try {
         const response = await axios.post(

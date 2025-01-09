@@ -43,6 +43,7 @@ Use the following command to download and run RabbitMQ using Docker:
 ```bash
 docker run -d --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3-management
 ```
+# NOTE: make sure u add a noa user with password noa to the rabbitmq management interface to be able to use the services
 
 ### Start RabbitMQ with Docker Compose (if not already running)
 
@@ -65,6 +66,14 @@ The Metamodel Service handles CRUD operations for managing the metamodel entitie
 cd services/metamodel
 node app.js
 ```
+### Start the Crud Generator Service
+
+The Crud Generator Service generates CRUD operations for the metamodel entities.
+
+```bash
+cd services/crud-generator
+node src/app.js
+```
 
 ### Start the Consumer
 
@@ -80,6 +89,23 @@ The producer records speech, converts it to text, and sends the generated messag
 
 ```bash
 python services/producer/src/producer.py
+```
+### Start the speech interface frontend
+
+The frontend is a simple web interface that allows the user to record speech and sent it to consumer.
+
+```bash
+cd services/speech-interface/frontend #navigate to the frontend folder
+yarn #to install the dependencies
+yarn dev #to start the frontend
+```
+### Start the speech interface frontend backend
+The backend does the same as the producer, but uses the front end to record the speech.
+
+```bash
+cd services/speech-interface/frontend #navigate to the frontend folder
+yarn #to install the dependencies
+yarn dev #to start the frontend
 ```
 
 ---

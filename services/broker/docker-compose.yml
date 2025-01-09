@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 services:
   rabbitmq:
     image: rabbitmq:3-management
@@ -7,32 +7,34 @@ services:
       - "5672:5672"
       - "15672:15672"
 
-  # connect:
-  #   build:
-  #     context: ../connect 
-  #     dockerfile: Dockerfile
-  #   depends_on:
-  #     - rabbitmq
-  #   volumes:
-  #     - ../connect:/app
-  #   command: ["python", "/app/src/connect.py"]
+# TODO: Update docker-compose.yml to include all services
 
-  producer:
-    build:
-      context: ../producer 
-      dockerfile: Dockerfile
-    depends_on:
-      - rabbitmq
-    volumes:
-      - ../producer:/app
-    command: ["python", "/app/src/producer.py"]
+# connect:
+#   build:
+#     context: ../connect
+#     dockerfile: Dockerfile
+#   depends_on:
+#     - rabbitmq
+#   volumes:
+#     - ../connect:/app
+#   command: ["python", "/app/src/connect.py"]
 
-  consumer:
-    build:
-      context: ../consumer 
-      dockerfile: Dockerfile
-    depends_on:
-      - rabbitmq
-    volumes:
-      - ../consumer:/app
-    command: ["python", "/app/src/consumer.py"]
+# producer:
+#   build:
+#     context: ../producer
+#     dockerfile: Dockerfile
+#   depends_on:
+#     - rabbitmq
+#   volumes:
+#     - ../producer:/app
+#   command: ["python", "/app/src/producer.py"]
+
+# consumer:
+#   build:
+#     context: ../consumer
+#     dockerfile: Dockerfile
+#   depends_on:
+#     - rabbitmq
+#   volumes:
+#     - ../consumer:/app
+#   command: ["python", "/app/src/consumer.py"]
