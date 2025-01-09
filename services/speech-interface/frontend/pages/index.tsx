@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import axios from "axios"; // Add Axios for HTTP requests
 import "../styles/globals.css";
 
 const AudioRecorder: React.FC = () => {
@@ -11,7 +12,7 @@ const AudioRecorder: React.FC = () => {
 
   const startRecording = async () => {
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-      alert("Opnemen wordt niet ondersteund in deze browser.");
+      alert("Recording is not supported in this browser.");
       return;
     }
 
@@ -25,23 +26,26 @@ const AudioRecorder: React.FC = () => {
         }
       };
 
-      mediaRecorder.onstop = () => {
+      mediaRecorder.onstop = async () => {
         const audioBlob = new Blob(audioChunksRef.current, { type: "audio/mp4" });
         const url = URL.createObjectURL(audioBlob);
         setAudioUrl(url);
         audioChunksRef.current = [];
+
+        // Send the audioBlob to the backend
+        await sendAudioToBackend(audioBlob);
       };
 
       mediaRecorder.start();
       mediaRecorderRef.current = mediaRecorder;
       setIsRecording(true);
 
-      // Start de timer
+      // Start the timer
       timerRef.current = window.setInterval(() => {
         setRecordingTime((prevTime) => prevTime + 1);
       }, 1000);
     } catch (error) {
-      console.error("Er is een fout opgetreden bij het starten van de opname:", error);
+      console.error("An error occurred while starting the recording:", error);
     }
   };
 
@@ -49,7 +53,7 @@ const AudioRecorder: React.FC = () => {
     mediaRecorderRef.current?.stop();
     setIsRecording(false);
 
-    // Stop de timer
+    // Stop the timer
     if (timerRef.current) {
       clearInterval(timerRef.current);
       timerRef.current = null;
@@ -58,7 +62,7 @@ const AudioRecorder: React.FC = () => {
 
   useEffect(() => {
     if (!isRecording) {
-      setRecordingTime(0); // Reset de timer wanneer opname stopt
+      setRecordingTime(0); // Reset the timer when recording stops
     }
   }, [isRecording]);
 
@@ -68,27 +72,46 @@ const AudioRecorder: React.FC = () => {
     return `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
   };
 
+  const sendAudioToBackend = async (audioBlob: Blob) => {
+    const formData = new FormData();
+    formData.append("audio", audioBlob, "recording.mp4");
+
+    try {
+      const response = await axios.post("/api/upload", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      console.log("Backend response:", response.data);
+      alert("Audio uploaded and processed successfully!");
+    } catch (error) {
+      console.error("Error uploading audio:", error);
+      alert("Failed to upload audio.");
+    }
+  };
+
   return (
     <div className="audio-recorder-container">
       <div className="audio-recorder-box">
         <h1>Audio Recorder</h1>
         {isRecording && (
           <div className="timer">
-            <p>Opname Tijd: {formatTime(recordingTime)}</p>
+            <p>Recording Time: {formatTime(recordingTime)}</p>
           </div>
         )}
         <button
           onClick={isRecording ? stopRecording : startRecording}
           className={`record-button ${isRecording ? "stop" : "start"}`}
         >
-          {isRecording ? "Stop Opnemen" : "Start Opname"}
+          {isRecording ? "Stop Recording" : "Start Recording"}
         </button>
 
         {audioUrl && (
           <div className="audio-controls">
             <audio controls src={audioUrl}></audio>
-            <a href={audioUrl} download="opname.mp4" className="download-link">
-              Download Opname
+            <a href={audioUrl} download="recording.mp4" className="download-link">
+              Download Recording
             </a>
           </div>
         )}
