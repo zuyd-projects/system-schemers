@@ -1,72 +1,76 @@
 
-# Producer Documentatie
+# Producer Documentation
 
-De **Producer** is verantwoordelijk voor het opnemen van spraak, het converteren naar tekst via de OpenAI Whisper API, en het verzenden van de gegenereerde berichten naar RabbitMQ.
+The **Producer** is responsible for recording speech, converting it to text using the OpenAI Whisper API, and sending the generated messages to RabbitMQ.
 
-## Overzicht
-1. **Spraak-naar-tekst:** De producer gebruikt de OpenAI Whisper API om spraak om te zetten naar tekst.
-2. **Event generatie:** Het resultaat wordt verpakt in een JSON-event.
-3. **Berichten verzenden:** Het event wordt gepubliceerd naar een specifieke RabbitMQ-queue.
+## Overview
+1. **Speech-to-Text:** The producer uses the OpenAI Whisper API to convert speech into text.
+2. **Event Generation:** The result is packaged into a JSON event.
+3. **Message Sending:** The event is published to a specific RabbitMQ queue.
 
-## Configuratie
-De configuratie voor de producer wordt ingesteld in `config.py`:
+## Configuration
+The configuration for the producer is set in `config.py`:
 ```python
-# RabbitMQ configuratie
+# RabbitMQ configuration
 RABBITMQ_HOST = 'localhost'
 RABBITMQ_QUEUE = 'speech_events'
 
-# OpenAI API-sleutel
-OPENAI_API_KEY = 'jouw-api-sleutel-hier'
+# OpenAI API key
+OPENAI_API_KEY = 'your-api-key-here'
 ```
 
-### Vereisten
-- **Python-pakketten:**
-  Zorg dat de volgende pakketten zijn geïnstalleerd:
+### Requirements
+- **Python Packages:**
+  Ensure the following packages are installed:
   ```bash
   pip install pika openai
   ```
 - **RabbitMQ:**  
-  Zorg ervoor dat een RabbitMQ-server actief is.
+  Ensure a RabbitMQ server is running.
 
-## Hoe te gebruiken
+## How to Use
 1. **Start RabbitMQ:**
-   Gebruik Docker Compose om RabbitMQ te starten:
+   Use Docker Compose to start RabbitMQ:
    ```bash
    docker-compose -f broker/docker-compose.yml up -d
    ```
 
-2. **Zorg voor een audiobestand:**
-   Plaats een audiobestand genaamd `input_audio.wav` in de map `producer/audio/`.
+2. **Prepare an Audio File:**
+   Place an audio file named `input_audio.wav` in the folder `producer/audio/`.
 
-3. **Start de producer:**
-   Draai het script:
+3. **Start the Producer:**
+   Run the script:
    ```bash
    python producer/src/producer.py
    ```
 
-4. **Verwachte output:**
-   - Het script leest het audiobestand, converteert het naar tekst, en stuurt een bericht naar RabbitMQ:
+4. **Expected Output:**
+   - The script reads the audio file, converts it to text, and sends a message to RabbitMQ:
      ```plaintext
-     Producer gestart. Spraakinvoer verwerken...
-     Spreek een opdracht in...
-     Herkenning voltooid: Ik wil graag een formulier met de velden e-mail, naam en overige opmerkingen.
-     [x] Bericht verstuurd: {"event_type": "speech_to_text", "payload": {"text": "Ik wil graag een formulier met de velden e-mail, naam en overige opmerkingen."}}
+     Producer started. Processing speech input...
+     Speak your command...
+     Recognition completed: I would like a form with the fields email, name, and additional comments.
+     [x] Message sent: {"event_type": "speech_to_text", "payload": {"text": "I would like a form with the fields email, name, and additional comments."}}
      ```
 
-## Belangrijke functies
+## Key Functions
 - **`transcribe_speech`:**  
-  Zet spraak om naar tekst met behulp van de OpenAI Whisper API.
+  Converts speech to text using the OpenAI Whisper API.
 - **`send_to_broker`:**  
-  Verzendt het gegenereerde bericht naar RabbitMQ.
+  Sends the generated message to RabbitMQ.
 
-## Foutafhandeling
-- Als het audiobestand niet wordt gevonden:
+## Error Handling
+- If the audio file is not found:
   ```plaintext
-  Audio bestand niet gevonden: ../audio/input_audio.wav
+  Audio file not found: ../audio/input_audio.wav
   ```
-- Als de verbinding met RabbitMQ mislukt:
-  Controleer of RabbitMQ actief is en of de configuratie correct is.
+- If the connection to RabbitMQ fails:
+  Ensure RabbitMQ is running and the configuration is correct.
 
-## Volgende stappen
-- Integreer met een frontend om spraakopname dynamisch te starten.
-- Voeg automatische retries toe voor RabbitMQ-verbindingen.
+## Next Steps
+- Integrate with a frontend to dynamically start speech recording.
+- Add automatic retries for RabbitMQ connections.
+
+## Contributors
+- **Noa Heutz** - Architect and Developer
+- **Maikel Heijen** - Architect and Developer

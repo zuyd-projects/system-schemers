@@ -1,0 +1,7 @@
+CREATE TABLE Person (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  name STR,
+  email STR,
+  birthdate DATE,
+  createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
+);
