@@ -1,14 +1,28 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const multer = require("multer");
+const path = require("path");
 const amqp = require("amqplib");
 const axios = require("axios");
 const { RABBITMQ_HOST, RABBITMQ_QUEUE, OPENAI_API_KEY } = require("./config");
 
 const app = express();
-const upload = multer({ dest: "uploads/" }); // Temp storage for audio files
 
 app.use(bodyParser.json());
+
+// Configure multer storage
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, "uploads/"); // Opslagmap
+    },
+    filename: function (req, file, cb) {
+        const ext = path.extname(file.originalname) || ".mp4"; // Gebruik ".mp4" als standaard
+        const uniqueName = `${Date.now()}-${Math.random().toString(36).substring(2, 8)}${ext}`;
+        cb(null, uniqueName);
+    },
+});
+
+const upload = multer({ storage });
 
 // Transcribe and send to RabbitMQ
 app.post("/upload", upload.single("audio"), async (req, res) => {
