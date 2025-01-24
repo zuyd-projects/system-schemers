@@ -1,7 +1,0 @@
-CREATE TABLE Garage (
-  id INT PRIMARY KEY AUTO_INCREMENT,
-  location STR,
-  employees LIST,
-  cars LIST,
-  createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
-);

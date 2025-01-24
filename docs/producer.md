@@ -1,6 +1,6 @@
 
 # Producer Documentation
-
+<!-- DEPRECATED: THIS WAS AN EXAMPLE VERSION WE NOW USE THE SPEECH INTERFACE -->
 The **Producer** is responsible for recording speech, converting it to text using the OpenAI Whisper API, and sending the generated messages to RabbitMQ.
 
 ## Overview
