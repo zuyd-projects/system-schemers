@@ -2,16 +2,41 @@ import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import "../styles/globals.css";
 
+/**
+ * Removes punctuation from a string, leaving only letters, digits, whitespace, and underscores (as part of \w).
+ * Adjust the regex as needed if you want to allow other characters or remove underscores.
+ */
+function removePunctuation(input: string): string {
+  // This regex removes any character that is not a word character or whitespace.
+  // Word characters: letters (a-z, A-Z), digits (0-9), and underscore (_).
+  // Whitespace: spaces, tabs, line breaks, etc.
+  return input.replace(/[^\w\s]/g, "");
+}
+
 const AudioRecorder: React.FC = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [recordingTime, setRecordingTime] = useState(0);
+
+  // Store the raw transcription from Whisper
   const [transcription, setTranscription] = useState<string | null>(null);
+
+  // Store an editable version of the transcription
+  const [editedTranscription, setEditedTranscription] = useState<string>("");
+
+  // Refs for MediaRecorder and audio chunks
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
+
+  // AudioContext ref for conversion
   const audioContextRef = useRef<AudioContext | null>(null);
+
+  // Ref to track recording timer
   const timerRef = useRef<number | null>(null);
 
+  // ----------------------------
+  // START / STOP RECORDING LOGIC
+  // ----------------------------
   const startRecording = async () => {
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
       alert("Recording is not supported in this browser.");
@@ -33,9 +58,10 @@ const AudioRecorder: React.FC = () => {
         const url = URL.createObjectURL(audioBlob);
         setAudioUrl(url);
 
-        // Zet MP4 om naar WAV
+        // Convert MP4 to WAV
         const wavBlob = await convertMp4ToWav(audioBlob);
         if (wavBlob) {
+          // Send the WAV blob to OpenAI for transcription
           await sendAudioToOpenAI(wavBlob);
         }
 
@@ -66,6 +92,9 @@ const AudioRecorder: React.FC = () => {
     }
   };
 
+  // ----------------------------
+  // AUDIO -> WAV CONVERSION LOGIC
+  // ----------------------------
   const convertMp4ToWav = async (mp4Blob: Blob): Promise<Blob | null> => {
     try {
       if (!audioContextRef.current) {
@@ -81,10 +110,9 @@ const AudioRecorder: React.FC = () => {
       const wavBuffer = new ArrayBuffer(44 + length * 2);
       const view = new DataView(wavBuffer);
 
-      // WAV header
       writeWavHeader(view, sampleRate, numberOfChannels, length);
 
-      // WAV data
+      // Write WAV data
       let offset = 44;
       for (let i = 0; i < audioBuffer.numberOfChannels; i++) {
         const channelData = audioBuffer.getChannelData(i);
@@ -131,6 +159,9 @@ const AudioRecorder: React.FC = () => {
     }
   };
 
+  // ----------------------------
+  // OPENAI TRANSCRIPTION LOGIC
+  // ----------------------------
   const sendAudioToOpenAI = async (audioBlob: Blob) => {
     const formData = new FormData();
     formData.append("file", audioBlob, "recording.wav");
@@ -144,13 +175,36 @@ const AudioRecorder: React.FC = () => {
         },
       });
 
-      setTranscription(response.data.text);
+      const transcribedText = removePunctuation(response.data.text);
+      // Set both the raw transcription and the editable version
+      setTranscription(transcribedText);
+      setEditedTranscription(transcribedText);
     } catch (error) {
       console.error("Error transcribing audio:", error);
       alert("Failed to transcribe audio.");
     }
   };
 
+  // ----------------------------
+  // SEND EDITED TEXT TO BACKEND
+  // ----------------------------
+  const sendTranscriptionToBackend = async (text: string) => {
+    try {
+      const response = await axios.post("http://localhost:5008/api/send-transcription", { text });
+      if (response.status === 200) {
+        alert("Transcription sent successfully!");
+      } else {
+        alert("Failed to send transcription.");
+      }
+    } catch (error) {
+      console.error("Error sending transcription to backend:", error);
+      alert("An error occurred while sending the transcription.");
+    }
+  };
+
+  // ----------------------------
+  // TIMER UTILS
+  // ----------------------------
   const formatTime = (time: number) => {
     const minutes = Math.floor(time / 60);
     const seconds = time % 60;
@@ -163,15 +217,22 @@ const AudioRecorder: React.FC = () => {
     }
   }, [isRecording]);
 
+  // ----------------------------
+  // RENDER
+  // ----------------------------
   return (
     <div className="audio-recorder-container">
       <div className="audio-recorder-box">
         <h1>Audio Recorder</h1>
+
+        {/* Timer while recording */}
         {isRecording && (
           <div className="timer">
             <p>Recording Time: {formatTime(recordingTime)}</p>
           </div>
         )}
+
+        {/* Start/Stop Recording Button */}
         <button
           onClick={isRecording ? stopRecording : startRecording}
           className={`record-button ${isRecording ? "stop" : "start"}`}
@@ -179,6 +240,7 @@ const AudioRecorder: React.FC = () => {
           {isRecording ? "Stop Recording" : "Start Recording"}
         </button>
 
+        {/* Playback and Download */}
         {audioUrl && (
           <div className="audio-controls">
             <audio controls src={audioUrl}></audio>
@@ -188,10 +250,21 @@ const AudioRecorder: React.FC = () => {
           </div>
         )}
 
+        {/* Editable Transcription */}
         {transcription && (
           <div className="transcription">
             <h2>Transcription</h2>
-            <p>{transcription}</p>
+            <textarea
+              value={editedTranscription}
+              onChange={(e) => setEditedTranscription(e.target.value)}
+              rows={5}
+              cols={50}
+            />
+            <div>
+              <button onClick={() => sendTranscriptionToBackend(editedTranscription)}>
+                Send Edited Transcription
+              </button>
+            </div>
           </div>
         )}
       </div>
