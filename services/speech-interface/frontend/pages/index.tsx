@@ -222,7 +222,14 @@ const AudioRecorder: React.FC = () => {
   // ----------------------------
   return (
     <div className="audio-recorder-container">
+
       <div className="audio-recorder-box">
+
+        <div className="header">
+        <img src="/Logo.png" alt="Logo" className="logo" />
+          <h1 className="project-name">System Schemers</h1>
+        </div>
+        <hr></hr>
         <h1>Audio Recorder</h1>
 
         {/* Timer while recording */}
@@ -249,7 +256,7 @@ const AudioRecorder: React.FC = () => {
             </a>
           </div>
         )}
-
+        <hr></hr>
         {/* Editable Transcription */}
         {transcription && (
           <div className="transcription">
